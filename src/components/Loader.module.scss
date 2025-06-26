@@ -1,0 +1,15 @@
+.container {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  user-select: none;
+}

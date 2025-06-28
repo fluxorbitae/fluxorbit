@@ -2,52 +2,53 @@ import { IconType } from "react-icons";
 
 import {
   HiArrowUpRight,
-  HiOutlineLink,
-  HiArrowTopRightOnSquare,
+  HiCalendar,
   HiEnvelope,
-  HiCalendarDays,
-  HiArrowRight,
+  HiMiniMinus,
+  HiMiniPlus,
   HiOutlineEye,
   HiOutlineEyeSlash,
-  HiOutlineDocument,
-  HiOutlineGlobeAsiaAustralia,
-  HiOutlineRocketLaunch,
+  HiOutlineHome,
+  HiOutlineLink,
+  HiOutlineMagnifyingGlass,
+  HiOutlineShieldCheck,
+  HiOutlineShoppingBag,
+  HiOutlineShoppingCart,
+  HiOutlineSparkles,
+  HiOutlineTruck,
+  HiOutlineUserGroup
 } from "react-icons/hi2";
 
-import {
-  PiHouseDuotone,
-  PiUserCircleDuotone,
-  PiGridFourDuotone,
-  PiBookBookmarkDuotone,
-  PiImageDuotone,
-} from "react-icons/pi";
+import { RiVisaLine } from "react-icons/ri";
 
-import { FaDiscord, FaGithub, FaLinkedin, FaX, FaThreads, FaFacebook, FaInstagram } from "react-icons/fa6";
+import { FaDiscord, FaGithub, FaGoogle, FaLinkedin, FaThreads } from "react-icons/fa6";
+import { IoShirtOutline } from "react-icons/io5";
 
 export const iconLibrary: Record<string, IconType> = {
-  arrowUpRight: HiArrowUpRight,
-  arrowRight: HiArrowRight,
-  email: HiEnvelope,
-  globe: HiOutlineGlobeAsiaAustralia,
-  person: PiUserCircleDuotone,
-  grid: PiGridFourDuotone,
-  book: PiBookBookmarkDuotone,
   openLink: HiOutlineLink,
-  calendar: HiCalendarDays,
-  home: PiHouseDuotone,
-  gallery: PiImageDuotone,
   discord: FaDiscord,
+  google: FaGoogle,
+  github: FaGithub,
+  arrowUpRight: HiArrowUpRight,
+  minus: HiMiniMinus,
+  plus: HiMiniPlus,
+  calendar: HiCalendar,
   eye: HiOutlineEye,
   eyeOff: HiOutlineEyeSlash,
-  github: FaGithub,
-  facebook: FaFacebook,
-  instagram: FaInstagram,
-  linkedin: FaLinkedin,
-  x: FaX,
+  search: HiOutlineMagnifyingGlass,
+  visa: RiVisaLine,
+  security: HiOutlineShieldCheck,
+  sparkle: HiOutlineSparkles,
+  cart: HiOutlineShoppingCart,
+  email: HiEnvelope,
   threads: FaThreads,
-  arrowUpRightFromSquare: HiArrowTopRightOnSquare,
-  document: HiOutlineDocument,
-  rocket: HiOutlineRocketLaunch
+  linkedin: FaLinkedin,
+  bag: HiOutlineShoppingBag,
+  people: HiOutlineUserGroup,
+  home: HiOutlineHome,
+  tshirt: IoShirtOutline,
+  delivery: HiOutlineTruck,
+  quality: HiOutlineSparkles
 };
 
 export type IconLibrary = typeof iconLibrary;

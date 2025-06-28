@@ -1,23 +1,40 @@
-import { getPosts } from "@/utils/utils";
-import { baseURL, routes as routesConfig } from "@/resources";
+import { getCollectionProducts } from '@/lib/fourthwall';
+import { validateEnvironmentVariables } from '@/lib/utils';
+import { MetadataRoute } from 'next';
 
-export default async function sitemap() {
-  const blogs = getPosts(["src", "app", "blog", "posts"]).map((post) => ({
-    url: `${baseURL}/blog/${post.slug}`,
-    lastModified: post.metadata.publishedAt,
+type Route = {
+  url: string;
+  lastModified: string;
+};
+
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : 'http://localhost:3000';
+
+export const dynamic = 'force-dynamic';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  validateEnvironmentVariables();
+
+  const routesMap = [''].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date().toISOString()
   }));
 
-  const works = getPosts(["src", "app", "work", "projects"]).map((post) => ({
-    url: `${baseURL}/work/${post.slug}`,
-    lastModified: post.metadata.publishedAt,
-  }));
+  const productsPromise = getCollectionProducts({ collection: 'all', currency: 'USD', limit: 100 }).then((products) =>
+    products.map((product) => ({
+      url: `${baseUrl}/product/${product.handle}`,
+      lastModified: product.updatedAt
+    }))
+  );
+  
+  let fetchedRoutes: Route[] = [];
 
-  const activeRoutes = Object.keys(routesConfig).filter((route) => routesConfig[route as keyof typeof routesConfig]);
+  try {
+    fetchedRoutes = await productsPromise;
+  } catch (error) {
+    throw JSON.stringify(error, null, 2);
+  }
 
-  const routes = activeRoutes.map((route) => ({
-    url: `${baseURL}${route !== "/" ? route : ""}`,
-    lastModified: new Date().toISOString().split("T")[0],
-  }));
-
-  return [...routes, ...blogs, ...works];
+  return [...routesMap, ...fetchedRoutes];
 }

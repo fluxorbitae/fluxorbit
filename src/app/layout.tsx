@@ -2,43 +2,83 @@ import '@once-ui-system/core/css/styles.css';
 import '@once-ui-system/core/css/tokens.css';
 import '@/resources/custom.css'
 
+import { Background, Column, Flex } from '@once-ui-system/core';
+
+import { Footer } from "@/components/layout/Footer";
+import { getCollections } from '@/lib/fourthwall';
 import classNames from "classnames";
+import { Metadata } from "next";
+import { headers } from "next/headers";
+import { ReactNode } from 'react';
+import { dataStyle, fonts,  baseURL, effects, meta, og, schema, social, style, sameAs } from "@/resources/once-ui.config";
+import { Providers } from '@/components/Providers';
 
-import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers } from '@/components';
-import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
-import AppLoader from '@/components/AppLoader'; 
+export async function generateMetadata(): Promise<Metadata> {
+	const host = (await headers()).get("host");
+	const metadataBase = host ? new URL(`https://${host}`) : undefined;
 
-export async function generateMetadata() {
-  return Meta.generate({
-    title: home.title,
-    description: home.description,
-    baseURL: baseURL,
-    path: home.path,
-    image: home.image,
-  });
+	return {
+		title: meta.title,
+		description: meta.description,
+		openGraph: {
+			title: og.title,
+			description: og.description,
+			url: 'https://' + baseURL,
+			type: og.type as
+				| "website"
+				| "article"
+				| "book"
+				| "profile"
+				| "music.song"
+				| "music.album"
+				| "music.playlist"
+				| "music.radio_station"
+				| "video.movie"
+				| "video.episode"
+				| "video.tv_show"
+				| "video.other",
+		},
+		metadataBase,
+	};
 }
 
+const schemaData = {
+	"@context": "https://schema.org",
+	"@type": schema.type,
+	"url": "https://" + baseURL,
+	"logo": schema.logo,
+	"name": schema.name,
+	"description": schema.description,
+	"email": schema.email,
+	"sameAs": Object.values(sameAs).filter(Boolean)
+};
+
 export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <Flex
-      suppressHydrationWarning
-      as="html"
-      lang="en"
-      fillWidth
-      className={classNames(
+	children
+}: {
+	children: ReactNode
+}) {
+	const collections = await getCollections();
+	
+	return (
+		<>
+		<Flex
+			suppressHydrationWarning
+			as="html"
+			lang="en"
+			fillWidth
+			className={classNames(
         fonts.heading.variable,
         fonts.body.variable,
         fonts.label.variable,
         fonts.code.variable,
-      )}
-    >
-      <head>
-        <script
+      )}>
+			<head>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+				/>
+				<script
           id="theme-init"
           dangerouslySetInnerHTML={{
             __html: `
@@ -95,62 +135,65 @@ export default async function RootLayout({
             `,
           }}
         />
-      </head>
-      <Providers>
-        <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
-          <Background
-            position="fixed"
-            mask={{
-              x: effects.mask.x,
-              y: effects.mask.y,
-              radius: effects.mask.radius,
-              cursor: effects.mask.cursor,
-            }}
-            gradient={{
-              display: effects.gradient.display,
-              opacity: effects.gradient.opacity as opacity,
-              x: effects.gradient.x,
-              y: effects.gradient.y,
-              width: effects.gradient.width,
-              height: effects.gradient.height,
-              tilt: effects.gradient.tilt,
-              colorStart: effects.gradient.colorStart,
-              colorEnd: effects.gradient.colorEnd,
-            }}
-            dots={{
-              display: effects.dots.display,
-              opacity: effects.dots.opacity as opacity,
-              size: effects.dots.size as SpacingToken,
-              color: effects.dots.color,
-            }}
-            grid={{
-              display: effects.grid.display,
-              opacity: effects.grid.opacity as opacity,
-              color: effects.grid.color,
-              width: effects.grid.width,
-              height: effects.grid.height,
-            }}
-            lines={{
-              display: effects.lines.display,
-              opacity: effects.lines.opacity as opacity,
-              size: effects.lines.size as SpacingToken,
-              thickness: effects.lines.thickness,
-              angle: effects.lines.angle,
-              color: effects.lines.color,
-            }}
-          />
-          <Flex fillWidth minHeight="16" hide="s"/>
-           <AppLoader>
-            <Header />
-            <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
-                <Flex horizontal="center" fillWidth minHeight="0">
-               <RouteGuard>{children}</RouteGuard>
-             </Flex>
-           </Flex>
-            <Footer />
-        </AppLoader>
-          </Column>
-        </Providers>
-      </Flex>
-  );
+			</head>
+			<Providers>
+			<Column
+				as="body"
+				background="page"
+				fillWidth margin="0" padding="0">
+				<Background
+					position="fixed"
+					mask={{
+						cursor: effects.mask.cursor,
+						x: effects.mask.x,
+						y: effects.mask.y,
+						radius: effects.mask.radius,
+					}}
+					gradient={{
+						display: effects.gradient.display,
+						x: effects.gradient.x,
+						y: effects.gradient.y,
+						width: effects.gradient.width,
+						height: effects.gradient.height,
+						tilt: effects.gradient.tilt,
+						colorStart: effects.gradient.colorStart,
+						colorEnd: effects.gradient.colorEnd,
+						opacity: effects.gradient.opacity as
+							| 0
+							| 10
+							| 20
+							| 30
+							| 40
+							| 50
+							| 60
+							| 70
+							| 80
+							| 90
+							| 100,
+					}}
+					dots={{
+						display: effects.dots.display,
+						color: effects.dots.color,
+						size: effects.dots.size as any,
+						opacity: effects.dots.opacity as any,
+					}}
+					grid={{
+						display: effects.grid.display,
+						color: effects.grid.color,
+						width: effects.grid.width as any,
+						height: effects.grid.height as any,
+						opacity: effects.grid.opacity as any,
+					}}
+					lines={{
+						display: effects.lines.display,
+						opacity: effects.lines.opacity as any,
+					}}
+				/>
+				{children}
+				<Footer collections={collections}/>
+			</Column>
+			</Providers>
+		</Flex>
+		</>
+	);
 }

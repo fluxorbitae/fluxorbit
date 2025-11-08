@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone', // Azure için ideal
+  output: 'standalone',
 };
+
 module.exports = nextConfig;

@@ -1,0 +1,26 @@
+name: Deploy to Azure Web App (staging)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # İsteğe bağlı: build öncesi hata yakalamak için
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci || npm i
+      - run: npm run build
+
+      # Kaynağı gönder; Oryx sunucuda yeniden build eder ve çalıştırır
+      - name: Deploy to Azure (staging slot)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: fluxorbit-ae
+          slot-name: staging
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+          package: .

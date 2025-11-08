@@ -10,13 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # İsteğe bağlı: build öncesi hata yakalamak için
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: npm ci || npm i
+
+      - run: npm ci
       - run: npm run build
 
-      # Kaynağı gönder; Oryx sunucuda yeniden build eder ve çalıştırır
+      # Kaynak kodu gönder; Oryx sunucuda build'i finalize eder
       - name: Deploy to Azure (staging slot)
         uses: azure/webapps-deploy@v3
         with:

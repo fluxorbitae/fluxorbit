@@ -9,7 +9,6 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@eslint/compat": "^1.4.1",
     "@heroui/accordion": "2.2.24",
     "@heroui/alert": "2.2.27",
     "@heroui/autocomplete": "2.3.29",
@@ -63,6 +62,8 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.4.1",
+    "@eslint/js": "^9.39.1",
     "@next/eslint-plugin-next": "15.3.4",
     "@react-types/shared": "3.32.1",
     "@tailwindcss/postcss": "4.1.11",
@@ -86,6 +87,7 @@
     "prettier": "3.5.3",
     "tailwind-variants": "3.1.1",
     "tailwindcss": "4.1.11",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "typescript-eslint": "^8.46.3"
   }
 }

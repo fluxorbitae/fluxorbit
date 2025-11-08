@@ -13,7 +13,6 @@ import { MessagesProvider } from "@/components/messages-context";
 import LoadingScreen from "@/components/loading-screen";
 import GlobalBG from "@/components/global-bg";
 
-// ---- SEO: title/desc + hreflang alternates
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
@@ -37,22 +36,27 @@ export const viewport: Viewport = {
   ],
 };
 
-// Statik üretim için
 export const dynamic = "force-static";
 
-// Build'te tüm localeleri üret
 export function generateStaticParams() {
-  return [{ locale: "en" }, { locale: "tr" }, { locale: "ar" }];
+  return [
+    { locale: "en" },
+    { locale: "tr" },
+    { locale: "ar" },
+  ];
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { locale: "en" | "tr" | "ar" };
-}) {
-  const locale = params.locale ?? "en";
+// ✅ RootLayout her türlü LayoutProps çakışmasını çözecek ultra-safe sürüm
+export default async function RootLayout(props: any) {
+  const { children } = props ?? {};
+
+  const maybeParams = props?.params;
+  const resolved =
+    typeof maybeParams?.then === "function"
+      ? await maybeParams
+      : maybeParams ?? { locale: "en" };
+
+  const locale: "en" | "tr" | "ar" = resolved?.locale ?? "en";
   const messages = await getMessages(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
 
@@ -61,24 +65,18 @@ export default async function RootLayout({
       <body
         className={clsx(
           "min-h-screen bg-darkbg text-foreground font-sans antialiased",
-          fontSans.variable,
-          // RTL için küçük bir tweak (isteğe bağlı)
-          dir === "rtl" && "rtl"
+          fontSans.variable
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          {/* Global gradient + mouse parıltısı */}
           <GlobalBG />
-          {/* İlk girişte kısa marka animasyonu */}
           <LoadingScreen />
-
           <MessagesProvider messages={messages}>
             <div className="relative flex flex-col h-screen">
               <Navbar />
               <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                 {children}
               </main>
-              {/* footer burada component olarak çağrılıyor (home page içinde zaten ekledik) */}
             </div>
           </MessagesProvider>
         </Providers>

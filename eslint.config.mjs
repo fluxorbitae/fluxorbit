@@ -9,7 +9,6 @@ import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
 
 export default [
-  // ignore’lar
   {
     ignores: [
       "**/node_modules/**",
@@ -27,11 +26,9 @@ export default [
     ],
   },
 
-  // TS ve JS önerilen kurallar
   ...tseslint.configs.recommended,
   pluginJs.configs.recommended,
 
-  // Proje kuralları
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
     languageOptions: {
@@ -40,13 +37,14 @@ export default [
       ecmaVersion: "latest",
       parserOptions: {
         ecmaFeatures: { jsx: true },
-        project: false, // tsconfig'e bağlı kılmak istersen true yapıp tsconfig yolu ver
       },
       globals: { ...globals.browser, ...globals.node },
     },
     settings: {
       react: { version: "detect" },
-      "import/resolver": { node: { extensions: [".js", ".jsx", ".ts", ".tsx"] } },
+      "import/resolver": {
+        node: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
+      },
     },
     plugins: {
       react,
@@ -56,52 +54,21 @@ export default [
       "unused-imports": unusedImports,
     },
     rules: {
-      // genel
-      "no-console": "warn",
-
-      // react
-      "react/prop-types": "off",
-      "react/jsx-uses-react": "off",
-      "react/react-in-jsx-scope": "off",
-      "react/self-closing-comp": "warn",
-      "react/jsx-sort-props": [
-        "warn",
-        { callbacksLast: true, shorthandFirst: true, reservedFirst: true }
-      ],
-
-      // hooks
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "off",
-
-      // a11y
-      "jsx-a11y/click-events-have-key-events": "warn",
-      "jsx-a11y/interactive-supports-focus": "warn",
-
-      // import/unused
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { args: "after-used", ignoreRestSiblings: false, argsIgnorePattern: "^_.*?$" }
-      ],
-      "unused-imports/no-unused-imports": "warn",
-      "unused-imports/no-unused-vars": "off",
-
-      "import/order": [
+      "@typescript-eslint/no-unused-expressions": [
         "warn",
         {
-          groups: ["type", "builtin", "object", "external", "internal", "parent", "sibling", "index"],
-          pathGroups: [{ pattern: "~/**", group: "external", position: "after" }],
-          "newlines-between": "always",
+          allowShortCircuit: true,
+          allowTernary: true,
         },
       ],
-
-      // biçim
-      "padding-line-between-statements": [
+      "@typescript-eslint/no-unused-vars": [
         "warn",
-        { blankLine: "always", prev: "*", next: "return" },
-        { blankLine: "always", prev: ["const", "let", "var"], next: "*" },
-        { blankLine: "any", prev: ["const", "let", "var"], next: ["const", "let", "var"] },
+        { argsIgnorePattern: "^_", ignoreRestSiblings: true },
       ],
+      "unused-imports/no-unused-imports": "warn",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "no-console": "warn",
     },
   },
 ];

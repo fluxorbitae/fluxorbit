@@ -1,18 +1,30 @@
-name: Deploy test (staging)
+name: Deploy to Azure Web App (staging, standalone)
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Azure (staging)
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci || npm i
+      - run: npm run build
+
+      - name: Prepare standalone artifact
+        run: |
+          mkdir -p ./.next/standalone/.next
+          cp -r ./.next/static ./.next/standalone/.next/static
+          [ -d public ] && cp -r public ./.next/standalone/public || true
+          cd .next/standalone && zip -r ../../app.zip ./*
+
+      - name: Deploy to Azure (staging slot)
         uses: azure/webapps-deploy@v3
         with:
           app-name: fluxorbit-ae
           slot-name: staging
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
-          package: .
+          package: app.zip

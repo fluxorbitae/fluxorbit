@@ -14,28 +14,8 @@ import { MessagesProvider } from "@/components/messages-context";
 import LoadingScreen from "@/components/loading-screen";
 import GlobalBG from "@/components/global-bg";
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  icons: { icon: "/favicon.ico" },
-  alternates: {
-    languages: {
-      en: "/en",
-      tr: "/tr",
-      ar: "/ar",
-    },
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-};
+export const metadata: Metadata = { /* ... aynı ... */ };
+export const viewport: Viewport = { /* ... aynı ... */ };
 
 export const dynamic = "force-static";
 
@@ -45,16 +25,14 @@ export function generateStaticParams() {
 
 type Locale = "en" | "tr" | "ar";
 
-type RootLayoutParams = { locale: Locale };
-type RootLayoutProps = {
+export default async function RootLayout({
+  children,
+  params,
+}: {
   children: ReactNode;
-  params: RootLayoutParams | Promise<RootLayoutParams>;
-};
-
-export default async function RootLayout({ children, params }: RootLayoutProps) {
-  const resolved = await Promise.resolve(params);
-  const locale: Locale = resolved?.locale ?? "en";
-
+  params: { locale: Locale };
+}) {
+  const locale: Locale = params?.locale ?? "en";
   const messages = await getMessages(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
 

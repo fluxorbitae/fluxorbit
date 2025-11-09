@@ -14,8 +14,24 @@ import { MessagesProvider } from "@/components/messages-context";
 import LoadingScreen from "@/components/loading-screen";
 import GlobalBG from "@/components/global-bg";
 
-export const metadata: Metadata = { /* ... aynı ... */ };
-export const viewport: Viewport = { /* ... aynı ... */ };
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  icons: { icon: "/favicon.ico" },
+  alternates: {
+    languages: { en: "/en", tr: "/tr", ar: "/ar" },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+};
 
 export const dynamic = "force-static";
 
@@ -24,15 +40,11 @@ export function generateStaticParams() {
 }
 
 type Locale = "en" | "tr" | "ar";
+type Params = { locale: Locale };
+type Props = { children: ReactNode; params: Promise<Params> }; // ← Promise!
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: { locale: Locale };
-}) {
-  const locale: Locale = params?.locale ?? "en";
+export default async function RootLayout({ children, params }: Props) {
+  const { locale } = await params; // ← Promise'ı bekliyoruz
   const messages = await getMessages(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
 

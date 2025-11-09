@@ -2,6 +2,7 @@
 import "@/styles/globals.css";
 import type { Viewport, Metadata } from "next";
 import clsx from "clsx";
+import type { ReactNode } from "react";
 
 import { Providers } from "../providers";
 import { siteConfig } from "@/config/site";
@@ -39,24 +40,21 @@ export const viewport: Viewport = {
 export const dynamic = "force-static";
 
 export function generateStaticParams() {
-  return [
-    { locale: "en" },
-    { locale: "tr" },
-    { locale: "ar" },
-  ];
+  return [{ locale: "en" }, { locale: "tr" }, { locale: "ar" }];
 }
 
-// ✅ RootLayout her türlü LayoutProps çakışmasını çözecek ultra-safe sürüm
-export default async function RootLayout(props: any) {
-  const { children } = props ?? {};
+type Locale = "en" | "tr" | "ar";
 
-  const maybeParams = props?.params;
-  const resolved =
-    typeof maybeParams?.then === "function"
-      ? await maybeParams
-      : maybeParams ?? { locale: "en" };
+type RootLayoutParams = { locale: Locale };
+type RootLayoutProps = {
+  children: ReactNode;
+  params: RootLayoutParams | Promise<RootLayoutParams>;
+};
 
-  const locale: "en" | "tr" | "ar" = resolved?.locale ?? "en";
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const resolved = await Promise.resolve(params);
+  const locale: Locale = resolved?.locale ?? "en";
+
   const messages = await getMessages(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
 

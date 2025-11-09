@@ -29,19 +29,22 @@ const slides = [
     img: "/slider/slide-3.jpg",
     badge: "Growth",
   },
-];
+] as const;
 
 export default function HeroSlider() {
   const [index, setIndex] = useState(0);
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  // ✅ Client-safe tip: NodeJS.Timeout yerine ReturnType<typeof setTimeout>
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const next = () => setIndex((i) => (i + 1) % slides.length);
   const go = (i: number) => setIndex(i);
 
   useEffect(() => {
-    timer.current && clearTimeout(timer.current);
-    timer.current = setTimeout(next, 5200);
-    return () => timer.current && clearTimeout(timer.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(next, 5200);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [index]);
 
   const s = slides[index];
@@ -61,7 +64,13 @@ export default function HeroSlider() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="absolute inset-0"
           >
-            <Image src={s.img} alt={s.title} fill priority className="object-cover opacity-[0.30]" />
+            <Image
+              src={s.img}
+              alt={s.title}
+              fill
+              priority
+              className="object-cover opacity-[0.30]"
+            />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -123,7 +132,9 @@ export default function HeroSlider() {
               key={i}
               onClick={() => go(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`h-2 rounded-full transition-all ${i === index ? "w-8 bg-teal-400" : "w-3 bg-white/30 hover:bg-white/60"}`}
+              className={`h-2 rounded-full transition-all ${
+                i === index ? "w-8 bg-teal-400" : "w-3 bg-white/30 hover:bg-white/60"
+              }`}
             />
           ))}
         </div>

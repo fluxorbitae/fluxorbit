@@ -10,7 +10,7 @@ import {
   NavbarMenuToggle,
 } from "@heroui/navbar";
 import { Button } from "@heroui/button";
-import clsx from "clsx";
+// import clsx from "clsx"; // ❌ Kullanılmıyor, kaldırıldı
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
@@ -45,17 +45,16 @@ export const Navbar = () => {
           <LocaleLink href="/" className="flex items-center gap-3 group">
             {/* LOGO */}
             <div className="relative w-[55px] h-[55px]">
-                <Image
-                  src="/fluxorbit_white.png"
-                  alt="FluxOrbit"
-                  fill
-                  priority
-                  className="object-contain opacity-95 group-hover:opacity-100 transition"
-                />
-
-                {/* Glow */}
-                <div className="absolute inset-0 rounded-full bg-teal-500/30 blur-2xl opacity-0 group-hover:opacity-40 transition" />
-              </div>
+              <Image
+                src="/fluxorbit_white.png"
+                alt="FluxOrbit"
+                fill
+                priority
+                className="object-contain opacity-95 group-hover:opacity-100 transition"
+              />
+              {/* Glow */}
+              <div className="absolute inset-0 rounded-full bg-teal-500/30 blur-2xl opacity-0 group-hover:opacity-40 transition" />
+            </div>
 
             <span className="font-semibold tracking-tight text-[1.15rem]">
               FluxOrbit
@@ -70,11 +69,10 @@ export const Navbar = () => {
           <NavbarItem key={item.href}>
             <LocaleLink
               href={item.href}
-              className="relative font-medium text-sm opacity-90 hover:opacity-100 transition"
+              className="relative font-medium text-sm opacity-90 hover:opacity-100 transition group"
             >
               {/* Text */}
               {t[item.key as keyof typeof t] ?? item.fallback}
-
               {/* Underline Grow Effect */}
               <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-teal-500/80 group-hover:w-full transition-[width] duration-300" />
             </LocaleLink>

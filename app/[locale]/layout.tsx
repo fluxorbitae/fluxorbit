@@ -1,8 +1,8 @@
 // app/[locale]/layout.tsx
 import "@/styles/globals.css";
 import type { Viewport, Metadata } from "next";
-import clsx from "clsx";
 import type { ReactNode } from "react";
+import clsx from "clsx";
 
 import { Providers } from "../providers";
 import { siteConfig } from "@/config/site";
@@ -39,12 +39,21 @@ export function generateStaticParams() {
   return [{ locale: "en" }, { locale: "tr" }, { locale: "ar" }];
 }
 
-type Locale = "en" | "tr" | "ar";
-type Params = { locale: Locale };
-type Props = { children: ReactNode; params: Promise<Params> }; // ← Promise!
+// ↓ Next 15 LayoutProps, params: Promise<{ locale: string }>
+type Props = {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+};
+
+const SUPPORTED = ["en", "tr", "ar"] as const;
+type Locale = (typeof SUPPORTED)[number];
 
 export default async function RootLayout({ children, params }: Props) {
-  const { locale } = await params; // ← Promise'ı bekliyoruz
+  const { locale: raw } = await params; // Next'in verdiği string
+  const locale: Locale = (SUPPORTED as readonly string[]).includes(raw)
+    ? (raw as Locale)
+    : "en"; // runtime narrowing
+
   const messages = await getMessages(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
 

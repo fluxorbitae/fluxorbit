@@ -8,7 +8,6 @@ import { Providers } from "../providers";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
-
 import { getMessages } from "@/lib/i18n";
 import { MessagesProvider } from "@/components/messages-context";
 import LoadingScreen from "@/components/loading-screen";
